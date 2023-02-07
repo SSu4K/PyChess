@@ -15,5 +15,5 @@ class Move:
         self.pos2 = pos2
         self.meta = meta
 
-    def __str__(self):
-        return f"{self.pos1} -> {self.pos2} {self.meta}"
+    def __repr__(self):
+        return f"{self.pos1} -> {self.pos2} {self.meta.value}"
