@@ -1,4 +1,4 @@
-from piece import Pawn, Color
+from piece import Pawn, Knight, Color
 
-pawn = Pawn((1, 1), Color.WHITE)
+pawn = Knight((1, 4), Color.WHITE)
 print(pawn.get_moves())
