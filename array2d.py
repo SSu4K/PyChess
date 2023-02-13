@@ -4,6 +4,15 @@ class Array2d:
         self.width = width
         self.height = height
         self.__arr = [[0]*width]*height
+
+    def __str__(self):
+        out = ""
+        for i in range(self.height):
+            for j in range(self.width):
+                out += str(self.__arr[j][i]) + " "
+            out += "\n"
+        
+        return out        
     
     def fill(self, value):
         for i in range(self.height):

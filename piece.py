@@ -6,6 +6,10 @@ class Color(IntEnum):
     WHITE = 1
     EMPTY = 0
     BLACK = -1
+    def __repr__(self):
+        return str(self.value)
+    def __str__(self):
+        return str(self.value)
 
 def is_inside(x, y):
     if x<0: return 0
@@ -18,6 +22,19 @@ class Piece:
     def __init__(self, pos, color):
         self._pos = pos
         self._color = color
+
+    def __repr__(self):
+        out = ""
+        out += self.__class__.__name__
+        out += str(self.pos)
+
+        return out
+
+    def __str__(self):
+        if self.color == Color.WHITE:
+            return self.__class__.__name__[0]
+        else:
+            return self.__class__.__name__.casefold()[0]
 
     @property
     def color(self):
@@ -67,6 +84,12 @@ class Pawn(Piece):
         return move_list
 
 class Knight(Piece):
+    def __str__(self):
+        if self.color == Color.WHITE:
+            return "N"
+        else:
+            return "n"
+
     def __add_move(self, move, flags, list):
         x, y = self.pos
         a, b = move
@@ -82,11 +105,22 @@ class Knight(Piece):
         twos = (2, -2)
 
         for m in itertools.product(ones, twos):
-            self.__add_move(m, (Flag.CAPTURE), move_list)
+            self.__add_move(m, (Flag.CAPTURE,), move_list)
             self.__add_move(m, (), move_list)
         for m in itertools.product(twos, ones):
-            self.__add_move(m, (Flag.CAPTURE), move_list)
+            self.__add_move(m, (Flag.CAPTURE,), move_list)
             self.__add_move(m, (), move_list)
 
         return move_list
 
+class Bishop(Piece):
+    pass
+
+class Rook(Piece):
+    pass
+
+class Queen(Piece):
+    pass
+
+class King(Piece):
+    pass
