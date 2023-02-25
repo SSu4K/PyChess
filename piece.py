@@ -1,6 +1,7 @@
 import itertools
+from functools import cached_property
 from enum import IntEnum
-from move import Move, Flag
+from move import Type
 
 class Color(IntEnum):
     WHITE = 1
@@ -10,6 +11,9 @@ class Color(IntEnum):
         return str(self.value)
     def __str__(self):
         return str(self.value)
+    @property
+    def opposite(self):
+        return Color(-self.value)
 
 def is_inside(x, y):
     if x<0: return 0
@@ -20,35 +24,45 @@ def is_inside(x, y):
 
 class Piece:
     def __init__(self, pos, color):
-        self._pos = pos
-        self._color = color
+        self.__pos = pos
+        self.__color = color
+
+    @property
+    def type(self):
+        return Type(self.__class__.__name__)
 
     def __repr__(self):
         out = ""
-        out += self.__class__.__name__
+        out += self.type
         out += str(self.pos)
 
         return out
 
     def __str__(self):
-        if self.color == Color.WHITE:
-            return self.__class__.__name__[0]
+
+        if self.color == Color.EMPTY:
+            return "-"
+        elif self.color == Color.WHITE:
+            return self.type.value[0]
         else:
-            return self.__class__.__name__.casefold()[0]
+            return self.type.value.casefold()[0]
 
     @property
     def color(self):
-        return self._color
+        return self.__color
     
     @property
     def pos(self):
-        return self._pos
+        return self.__pos
 
     def move(self, pos):
-        self._pos = pos
+        self.__pos = pos
 
-    def get_moves(self):
-        pass
+    def attacked(self, board):
+        return []
+
+class Empty(Piece):
+    pass
 
 class Pawn(Piece):
 
@@ -59,29 +73,18 @@ class Pawn(Piece):
         else: home = 7
         return abs(home - self.pos[1])
 
-    def __get_captures(self, flags):
-        move_list = []
+    def attacked(self, board): 
+        attacked_list = []
         x, y = self.pos
-        if(y>0):
-            move_list.append(Move(self.pos, (x-1, y+self.color), flags))
-        if(y<7):
-            move_list.append(Move(self.pos, (x+1, y+self.color), flags))
-
-        return move_list 
-
-    def get_moves(self): 
-        move_list = []
-        x, y = self.pos
-        if self.advancement < 6:
-            move_list.append(Move(self.pos, (x, y+self.color), ()))
-            move_list += self.__get_captures(Flag.CAPTURE)
-        else:
-            move_list.append(Move(self.pos, (x, y+self.color), (Flag.PROMOTE)))
-            move_list += self.__get_captures((Flag.PROMOTE, Flag.CAPTURE))
-        if self.advancement == 4:
-            move_list += self.__get_captures((Flag.ENPASSANT, Flag.CAPTURE))
-
-        return move_list
+        color = self.color
+        if x > 0:
+            if board[x-1][y+color].color != color:
+                attacked_list.append((x-1, y+color))
+        if x < 7:
+            if board[x+1][y+color].color != color:
+                attacked_list.append((x+1, y+color))
+        
+        return attacked_list
 
 class Knight(Piece):
     def __str__(self):
@@ -90,37 +93,96 @@ class Knight(Piece):
         else:
             return "n"
 
-    def __add_move(self, move, flags, list):
-        x, y = self.pos
-        a, b = move
-        x += a
-        y += b
-        if is_inside(x, y):
-            list.append(Move(self.pos, (x, y), flags))
-    
-
-    def get_moves(self):
-        move_list = []
+    def attacked(self, board):
+        attacked_list = []
         ones = (1, -1)
         twos = (2, -2)
-
         for m in itertools.product(ones, twos):
-            self.__add_move(m, (Flag.CAPTURE,), move_list)
-            self.__add_move(m, (), move_list)
+            x, y = self.pos
+            x += m[0]
+            y += m[1]
+            if is_inside(x, y):
+                if board[x][y] != self.color:
+                    attacked_list.append(m)
         for m in itertools.product(twos, ones):
-            self.__add_move(m, (Flag.CAPTURE,), move_list)
-            self.__add_move(m, (), move_list)
+            x, y = self.pos
+            x += m[0]
+            y += m[1]
+            if is_inside(x, y):
+                if board[x][y] != self.color:
+                    attacked_list.append(m)
 
-        return move_list
+        return attacked_list
 
 class Bishop(Piece):
-    pass
+
+    def attacked(self, board):
+        attacked_list = []
+        for dx in (-1, 1):
+            for dy in (-1, 1):
+                x, y = self.pos
+                x += dx
+                y += dy
+                while is_inside(x, y):
+                    if board[x][y].color != self.color:
+                        attacked_list.append((x, y))
+                    if board[x][y].color != Color.EMPTY:
+                        break
+                    x += dx
+                    y += dy
+        return attacked_list
+
 
 class Rook(Piece):
-    pass
+
+    def attacked(self, board):
+        attacked_list = []
+        for d in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+            dx, dy = d
+            x, y = self.pos
+            x += dx
+            y += dy
+            while is_inside(x, y):
+                if board[x][y].color != self.color:
+                    attacked_list.append((x, y))
+                if board[x][y].color != Color.EMPTY:
+                    break
+                x += dx
+                y += dy
+        return attacked_list
 
 class Queen(Piece):
-    pass
+
+    def attacked(self, board):
+        attacked_list = []
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                if dx == 0 and dy == 0:
+                    continue
+                x, y = self.pos
+                x += dx
+                y += dy
+                while is_inside(x, y):
+                    if board[x][y].color != self.color:
+                        attacked_list.append((x, y))
+                    if board[x][y].color != Color.EMPTY:
+                        break
+                    x += dx
+                    y += dy
+        return attacked_list
 
 class King(Piece):
-    pass
+
+    def attacked(self, board):
+        attacked_list = []
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                if dx == 0 and dy == 0:
+                    continue
+                x, y = self.pos
+                x += dx
+                y += dy
+                if is_inside(x, y):
+                    if board[x][y].color != self.color:
+                        attacked_list.append((x, y))
+        return attacked_list
