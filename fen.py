@@ -1,4 +1,5 @@
 from piece import Color
+from move import Flag
 
 def is_01(num):
     if num == 0 or num == 1:
@@ -10,7 +11,12 @@ class FenFile:
         self.active = Color.WHITE
         self.pieces = ""
         self.en_passant_square = (-1, -1)
-        self.castle_rights = [True, True, True, True]
+        self.castle_rights = {
+            (Color.WHITE, Flag.LONG_CASTLE): False,
+            (Color.WHITE, Flag.SHORT_CASTLE): False,
+            (Color.BLACK, Flag.LONG_CASTLE): False,
+            (Color.BLACK, Flag.SHORT_CASTLE): False
+        }
         self.half_move_counter = 0
         self.move_counter = 0
         self.good = False
@@ -64,10 +70,10 @@ class FenFile:
         else:
             self.active = Color.BLACK
         
-        self.castle_rights[0] = castling.count("K")
-        self.castle_rights[1] = castling.count("Q")
-        self.castle_rights[2] = castling.count("k")
-        self.castle_rights[3] = castling.count("q")
+        self.castle_rights[(Color.WHITE, Flag.SHORT_CASTLE)] = bool(castling.count("K"))
+        self.castle_rights[(Color.WHITE, Flag.LONG_CASTLE)] = bool(castling.count("Q"))
+        self.castle_rights[(Color.BLACK, Flag.SHORT_CASTLE)] = bool(castling.count("k"))
+        self.castle_rights[(Color.BLACK, Flag.LONG_CASTLE)] = bool(castling.count("q"))
 
         if ep != "-":
             self.en_passant_square = (ord(ep[0])-97, ord(ep[1])-49)

@@ -102,15 +102,15 @@ class Knight(Piece):
             x += m[0]
             y += m[1]
             if is_inside(x, y):
-                if board[x][y] != self.color:
-                    attacked_list.append(m)
+                if board[x][y].color != self.color:
+                    attacked_list.append((x, y))
         for m in itertools.product(twos, ones):
             x, y = self.pos
             x += m[0]
             y += m[1]
             if is_inside(x, y):
-                if board[x][y] != self.color:
-                    attacked_list.append(m)
+                if board[x][y].color != self.color:
+                    attacked_list.append((x, y))
 
         return attacked_list
 

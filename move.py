@@ -44,4 +44,4 @@ class Move:
         return f"{self.type} {self.pos1} -> {self.pos2} {self.flags}"
     
     def reversed(self):
-        return Move(self.pos2, self.pos1, ())
+        return Move(self.type, self.pos2, self.pos1, ())
