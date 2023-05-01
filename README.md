@@ -1,2 +1,3 @@
 # PyChess
-My python chess
+My python chess.
+work in progress
