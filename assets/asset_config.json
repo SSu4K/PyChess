@@ -1,0 +1,22 @@
+{
+    "colors": {
+        "black_tile_color": [30, 30, 30],
+        "white_tile_color": [200, 200, 200]
+    },
+    "white_texture_paths": {
+        "Pawn": "w_pawn_png_512px.png",
+        "Bishop": "w_bishop_png_512px.png",
+        "Knight": "w_knight_png_512px.png",
+        "Rook": "w_rook_png_512px.png",
+        "Queen": "w_queen_png_512px.png",
+        "King": "w_king_png_512px.png"
+    },
+    "black_texture_paths": {
+        "Pawn": "b_pawn_png_512px.png",
+        "Bishop": "b_bishop_png_512px.png",
+        "Knight": "b_knight_png_512px.png",
+        "Rook": "b_rook_png_512px.png",
+        "Queen": "b_queen_png_512px.png",
+        "King": "b_king_png_512px.png"
+    }
+}
