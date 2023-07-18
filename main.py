@@ -1,5 +1,5 @@
 from game import Game
-from interface import DisplayBoard
+from interface import DisplayBoard, InteractiveBoard
 from fen import FenFile
 from position import Position
 import pygame
@@ -12,14 +12,15 @@ WHITE = (255, 255, 255)
 RED = (200, 50, 100)
 GREEN = (50, 200, 100)
 
-WINDOW_SIZE = (800, 500)
+WINDOW_SIZE = (600, 600)
 
 pygame.init()
 window = pygame.display.set_mode(WINDOW_SIZE, pygame.RESIZABLE)
 surface = pygame.display.get_surface()
 
-board = DisplayBoard()
+board = InteractiveBoard()
 board.load_position(game.position)
+#board.is_flipped=True
 run = True
 while(run):
     for event in pygame.event.get():
@@ -27,5 +28,11 @@ while(run):
             pygame.quit()
             exit()
     surface.fill(GREEN)
+    move = board.get_move(surface)
+    
+    if move != None:
+        game.position.move(move)
+        board.load_position(game.position)
+
     board.blit(surface)
     pygame.display.flip()

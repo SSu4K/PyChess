@@ -1,7 +1,7 @@
 {
     "colors": {
-        "black_tile_color": [30, 30, 30],
-        "white_tile_color": [200, 200, 200]
+        "black_tile_color": [30, 80, 30],
+        "white_tile_color": [200, 200, 180]
     },
     "white_texture_paths": {
         "Pawn": "w_pawn_png_512px.png",
