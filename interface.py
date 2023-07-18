@@ -3,13 +3,17 @@ import json
 from position import Position
 from move import Flag, Type, Move
 from piece import Color
-from copy import copy, deepcopy
 
 file = open("assets/asset_config.json")
 CONFIG = json.load(file)
 file.close()
+
 BLACK = CONFIG["colors"]["black_tile_color"]
 WHITE = CONFIG["colors"]["white_tile_color"]
+HIGHLIGHT = CONFIG["colors"]["highlight_color"]
+RECTANGLE_WIDTH = CONFIG["highlight_parameters"]["rectangle_width"]
+CIRCLE_RADIUS = CONFIG["highlight_parameters"]["circle_radius"]
+
 PIECE_SCALE = 0.8
 SURFACE_RESOLUTION = 4096
 TILE_RESOLUTION = SURFACE_RESOLUTION / 8
@@ -102,21 +106,20 @@ class InteractiveBoard(DisplayBoard):
             if piece.pos[0] == mouse_tile[0] and piece.pos[1] == mouse_tile[1] and piece.color == self.position.to_move:
                 self.selected_piece = piece
                 tile_pos = self.get_tile_pos(mouse_tile[0], mouse_tile[1])
-                pygame.draw.rect(self.surface, (255, 0, 0),
-                                 (tile_pos, (TILE_RESOLUTION, TILE_RESOLUTION)), 20)
+                pygame.draw.rect(self.surface, HIGHLIGHT,
+                                 (tile_pos, (TILE_RESOLUTION, TILE_RESOLUTION)), RECTANGLE_WIDTH)
 
         if self.selected_piece != None:
-            # print("Selected: ", )
             for move in self.legal_moves:
                 if move.pos1 == self.selected_piece.pos:
                     self.selected_moves.append(move)
                     tile_pos = self.get_tile_pos(move.pos2[0], move.pos2[1])
                     if Flag.CAPTURE in move.flags:
                         pygame.draw.rect(
-                            self.surface, (255, 0, 0), (tile_pos, (TILE_RESOLUTION, TILE_RESOLUTION)), 20)
+                            self.surface, HIGHLIGHT, (tile_pos, (TILE_RESOLUTION, TILE_RESOLUTION)), RECTANGLE_WIDTH)
                     else:
                         pygame.draw.circle(
-                            self.surface, (255, 0, 0), (tile_pos[0] + TILE_RESOLUTION/2, tile_pos[1] + TILE_RESOLUTION/2), 40)
+                            self.surface, HIGHLIGHT, (tile_pos[0] + TILE_RESOLUTION/2, tile_pos[1] + TILE_RESOLUTION/2), CIRCLE_RADIUS)
 
     def get_move(self, surface: pygame.Surface) -> Move:
         surface_width = min(surface.get_size())
@@ -135,6 +138,6 @@ class InteractiveBoard(DisplayBoard):
                     if move.pos2[0] == mouse_tile[0] and move.pos2[1] == mouse_tile[1]:
                         self.selected_piece = None
                         return move
-                self.selected_piece = None
+                self.select_piece(mouse_tile)
 
         return None

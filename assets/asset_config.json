@@ -1,7 +1,12 @@
 {
     "colors": {
         "black_tile_color": [30, 80, 30],
-        "white_tile_color": [200, 200, 180]
+        "white_tile_color": [200, 200, 180],
+        "highlight_color": [200, 50, 30]
+    },
+    "highlight_parameters": {
+        "rectangle_width": 40,
+        "circle_radius": 60
     },
     "white_texture_paths": {
         "Pawn": "w_pawn_png_512px.png",

@@ -54,6 +54,10 @@ class Piece:
     @property
     def pos(self):
         return self.__pos
+    
+    @property
+    def value(self):
+        return 0
 
     def move(self, pos):
         self.__pos = pos
@@ -72,6 +76,10 @@ class Pawn(Piece):
             home = 0
         else: home = 7
         return abs(home - self.pos[1])
+
+    @property
+    def value(self):
+        return 1
 
     def attacked(self, board): 
         attacked_list = []
@@ -92,6 +100,10 @@ class Knight(Piece):
             return "N"
         else:
             return "n"
+
+    @property
+    def value(self):
+        return 3
 
     def attacked(self, board):
         attacked_list = []
@@ -116,6 +128,10 @@ class Knight(Piece):
 
 class Bishop(Piece):
 
+    @property
+    def value(self):
+        return 3
+
     def attacked(self, board):
         attacked_list = []
         for dx in (-1, 1):
@@ -135,6 +151,10 @@ class Bishop(Piece):
 
 class Rook(Piece):
 
+    @property
+    def value(self):
+        return 5
+
     def attacked(self, board):
         attacked_list = []
         for d in ((-1, 0), (1, 0), (0, -1), (0, 1)):
@@ -152,6 +172,10 @@ class Rook(Piece):
         return attacked_list
 
 class Queen(Piece):
+
+    @property
+    def value(self):
+        return 9
 
     def attacked(self, board):
         attacked_list = []
