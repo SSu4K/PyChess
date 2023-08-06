@@ -7,10 +7,13 @@ The program is currently able to:
 - make a move in a position
 - represent the move in algebraic notation
 - load position from the FEN format
+- terminal user interface
+- graphical interface using pygame
 
 Current goals:
-- make chess playable by two players in the terminal
-- add user interface using pygame
+- add promotion user interface
+- implement win, loss and draw conditions
+- make the game fully playable for two players
 - add simple bot able to play against player or another bot
 
 Chess pieces textures source:
